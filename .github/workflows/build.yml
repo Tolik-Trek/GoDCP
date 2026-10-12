@@ -36,7 +36,11 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
+          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev libwayland-dev libxkbcommon-dev
+      - name: Test Windows Go discovery
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/test-build.ps1
       - name: Test and build Windows
         if: runner.os == 'Windows'
         shell: pwsh
@@ -48,6 +52,18 @@ jobs:
       - name: Test and build Linux or macOS
         if: runner.os != 'Windows'
         run: bash scripts/build.sh
+      - name: Check Windows executable starts
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath (Join-Path $PWD 'Build/GoDCP.exe') -ArgumentList '--version' -WindowStyle Hidden -Wait -PassThru -RedirectStandardOutput 'Build/version.txt'
+          if ($process.ExitCode -ne 0) { throw "GoDCP exited with code $($process.ExitCode)" }
+          $version = Get-Content Build/version.txt -Raw
+          if ($version -notmatch '^GoDCP \d+\.\d+\.\d+\s*$') { throw "Unexpected version output: $version" }
+          Write-Host $version.Trim()
+      - name: Check Linux or macOS executable starts
+        if: runner.os != 'Windows'
+        run: ./Build/GoDCP --version
       - name: Package Linux executable with its permissions
         if: runner.os == 'Linux'
         run: tar -czf Build/GoDCP.tar.gz -C Build GoDCP

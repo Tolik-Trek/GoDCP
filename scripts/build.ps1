@@ -9,9 +9,13 @@ $ErrorActionPreference = 'Stop'
 
 $goExecutable = $null
 if ($Go) {
-    $goExecutable = (Get-Command -Name $Go -CommandType Application -ErrorAction Stop).Source
+    $goExecutable = (Get-Command -Name $Go -CommandType Application -ErrorAction Stop |
+        Select-Object -First 1).Source
 } else {
-    $goCommand = Get-Command -Name go -CommandType Application -ErrorAction SilentlyContinue
+    # -CommandType Application can return every matching executable in PATH.
+    # Keep the first candidate, just as invoking go directly would do.
+    $goCommand = Get-Command -Name go -CommandType Application -ErrorAction SilentlyContinue |
+        Select-Object -First 1
     if ($goCommand) {
         $goExecutable = $goCommand.Source
     } elseif ($env:LOCALAPPDATA) {

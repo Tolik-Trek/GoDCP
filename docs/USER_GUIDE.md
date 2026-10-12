@@ -31,14 +31,22 @@ $env:PATH = 'C:\msys64\ucrt64\bin;' + $env:PATH
 
 Скрипт также распознаёт переносимую установку в
 `%LOCALAPPDATA%\GoDCP-tools\go<версия>\go\bin\go.exe`.
+Если в PATH несколько установок Go, используется первая по порядку поиска.
+Параметр `-Go` позволяет явно выбрать другую установку.
 Результат — `Build/GoDCP.exe`, без отдельного консольного окна.
 
-В Linux нужны GCC и заголовки OpenGL/X11. Например, для Ubuntu/Debian:
+В Linux нужны GCC и заголовки OpenGL, X11, Wayland и xkbcommon. Например,
+для Ubuntu/Debian:
 
 ```bash
-sudo apt-get install gcc libgl1-mesa-dev xorg-dev
+sudo apt-get install gcc libgl1-mesa-dev xorg-dev libwayland-dev libxkbcommon-dev
 bash scripts/build.sh
 ```
+
+Используемая версия GLFW собирает поддержку X11 и Wayland одновременно.
+Пакеты `libwayland-dev` и `libxkbcommon-dev` нужны даже при сборке в окружении
+без графического сеанса; перечень зависимостей приведён в
+[документации GLFW](https://www.glfw.org/docs/latest/compile.html#compile_deps_wayland).
 
 В macOS установите Xcode Command Line Tools (`xcode-select --install`)
 и запустите `bash scripts/build.sh`. В Linux и macOS получается исполняемый
