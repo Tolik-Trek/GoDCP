@@ -1,0 +1,292 @@
+;███████████████████████████████████████████████████████████████████████
+	MODULE ACEX
+;███████████████████████████████████████████████████████████████████████
+	DEFINE ACEX.RELOAD_STRING 'ACEX_30K_LOADING'
+LOADER:
+.String_Address		EQU #FEF0
+.Reload_Flag_Address	EQU #FEE0
+.Reload_Flag		EQU 'MI'
+
+Chip_ID:
+.K30			EQU #397B
+.K50			EQU #3C7B
+; 
+;       внутренние порты Altera (частично неразобрано от Sp97)
+;#00		Нет порта
+;#01		reserved
+;#02		reserved
+;#03		reserved
+;#04		reserved
+;#05		reserved
+;#06		reserved
+;#07		reserved
+;#08		reserved
+;#09		reserved
+;#0A		reserved
+;#0B		reserved
+;#0C		reserved
+;#0D		reserved
+;#0E		reserved
+;#0F		reserved
+VG93_1F			EQU #10						; порт ВГ93 (1F)
+VG93_3F			EQU #11						; порт ВГ93 (3F)
+VG93_5F			EQU #12						; порт ВГ93 (5F)
+VG93_7F			EQU #13						; порт ВГ93 (7F)
+VG93_State		EQU #14						; порт на запись - состояние контроллера дисковода (внешний порт #FF)
+JOY_VG93		EQU #15						; порт на чтение - джойстик и IRQ/INTRQ контроллера ВГ93
+
+; Порт FDD 720  ; #00BD - переключение в 720 -  заслать 1. можно LD A,#01 : OUT (#BD),A. Работает c DOS ON либо в CNF_3 с DOS OFF
+FDD720			EQU #16 
+; Порт FDD 1.44 ; #20BD - переключение в 1.44 - заслать 1. можно LD A,#21 : OUT (#BD),A. Работает c DOS ON либо в CNF_3 с DOS OFF 
+FDD144			EQU #17
+
+;#18	reserved
+;#19	reserved
+;#1A	reserved
+
+ISA_CTRL		EQU #1B						; #9FBD
+CMOS_DATA.READ		EQU #1C						; #FFBD
+CMOS_ADDR.WRITE		EQU #1D						; #DFBD
+CMOS_DATA.WRITE		EQU #1E						; #BFBD
+
+;#1F	reserved
+
+IDE_DATA_1F0		EQU #20						; HDD - регистр данных. внешний #0050
+IDE_ERROR_1F1		EQU #21						; HDD - регистр состояния/ошибок. внешний #0051
+IDE_COUNTER_1F2		EQU #22						; HDD - рег. кол-ва сек-ов для R/W. внешний #0052
+IDE_SECTOR_1F3		EQU #23						; HDD - регистр сектора. внешний #0053
+IDE_CYLINDER_L_1F4	EQU #24						; HDD - регистр дорожки-low. внешний #0054
+IDE_CYLINDER_H_1F5	EQU #25						; HDD - регистр дорожки-high. внешний #0055
+IDE_DEVICE_HEAD_1F6	EQU #26						; HDD - рег. heads/выбора mas-slave. внешний #4052
+IDE_STATUS_CMD_1F7	EQU #27						; HDD - регистр команд. внешний #4053
+IDE_CONTROL_3F6		EQU #28						; HDD - доп. регистр управления 3F6. внешний #4054
+IDE_STATUS_3F7		EQU #29						; HDD - доп. регистр состояния 3F7. внешний #4055
+IDE_CHANEL_1		EQU #2A						; HDD - выбирает Secondary IDE, внешний #BC
+IDE_CHANEL_2		EQU #2B						; HDD - выбирает Primary IDE, внешний #BC
+VSYNC320		EQU #2C						; #40BD
+VSYNC312		EQU #2D						; #60BD	
+RESET			EQU #2E						; S_RESET - #40A4 - Reset port
+UNKNOWN			EQU #2F						; ?????	; #60BC - что-то на запись
+;#30 - ????? ISA-SLOT 1 - ports R/W
+;#31 - ????? ISA-SLOT 2 - ports R/W
+ISA_Control		EQU #32						; ISA-signals such as RESET, AEN, A19...A14. Внешний #9FBD
+;#33 - ????? ISA-SLOT 2 - memory R/W
+;#34	reserved
+;#35	reserved
+;#36	reserved
+;#37	reserved
+;#38	reserved
+;#39	reserved
+;#3A	reserved
+;#3B	reserved
+;#3C	reserved
+;#3D	reserved
+;#3E	reserved
+;#3F	reserved
+ZX_Keyboard		EQU #40						; ZX-Keyboard (порт FE)
+;#41	reserved
+;#42	reserved
+;#43	reserved
+;#44	reserved
+;#45	reserved
+;#46	reserved
+;#47	reserved
+;#48	reserved
+;#49	reserved
+;#4A	reserved
+;#4B	reserved
+;#4C	reserved
+;#4D	reserved
+;#4E	reserved
+;#4F	reserved
+;#50	reserved
+;#51	reserved
+AY_FFFD_READ		EQU #52		; AY_D READ			; AY-8910-port (FFFD) чтение данных
+;#53	reserved
+;#54	reserved
+;#55	reserved
+;#56	reserved
+;#57	reserved
+Kempston_Mouse		EQU #58						; #FADF внешний
+;#59	reserved
+;#5A	reserved
+;#5B	reserved
+;#5C	reserved
+;#5D	reserved
+;#5E	reserved
+;#5F	reserved
+;#60	reserved
+;#61	reserved
+;#62	reserved
+;#63	reserved
+;#64	reserved
+;#65	reserved
+;#66	reserved
+;#67	reserved
+;#68	reserved
+;#69	reserved
+;#6A	reserved
+;#6B	reserved
+;#6C	reserved
+;#6D	reserved
+;#6E	reserved
+;#6F	reserved
+;#70	reserved
+;#71	reserved
+;#72	reserved
+;#73	reserved
+;#74	reserved
+;#75	reserved
+;#76	reserved
+;#77	reserved
+;#78	reserved
+;#79	reserved
+;#7A	reserved
+;#7B	reserved
+;#7C	reserved
+;#7D	reserved
+;#7E	reserved
+;#7F	reserved
+;- - - - - - - - - - - - - - - [RAM CELLS] - - - - - - - - - - - - - - -;
+;#80	reserved
+;#81	reserved
+;#82	reserved
+;#83	reserved
+;#84	reserved
+;#85	reserved
+;#86	reserved
+;#87	reserved
+CBL_OUT			EQU #88						; Write to COVOX/COVOX-Blaster
+CBL_SYS_PORT		EQU #89						; CBL_DIR
+;#8A	reserved
+;#8B	reserved
+;#8C	reserved	3000	-- AY_D READ	; legacy. !FIXIT убрать, не используется
+;#8D	reserved	2000    -- AY_A WRITE  	; в конфе хардкод на #90
+;#8E	reserved	2000	-- AY_D WRITE	; в конфе хардкод на #91
+ROM_RG			EQU #8F						; порт переключения страниц ROM и FastRam, дублируется внешним портом #5C
+AY_FFFD_WRITE		EQU #90						; AY-8910-port (FFFD)  ;!!!!! запись адреса??????
+AY_BFFD			EQU #91						; AY-8910-port (BFFD)
+;#92	reserved
+;#93	reserved
+;#94	reserved
+;#95	reserved
+;#96	reserved
+;#97	reserved
+;#98	reserved
+;#99	reserved
+;#9A	reserved
+;#9B	reserved
+;#9C	reserved
+;#9D	reserved
+;#9E	reserved
+;#9F	reserved
+;#A0	reserved
+;#A1	reserved
+;#A2	reserved
+;#A3	reserved
+;#A4	reserved
+;#A5	reserved
+;#A6	reserved
+;#A7	reserved
+;#A8	reserved
+;#A9	reserved
+;#AA	reserved
+;#AB	reserved
+;#AC	reserved
+;#AD	reserved
+;#AE	reserved
+;#AF	reserved
+;#B0	reserved
+;#B1	reserved
+;#B2	reserved
+;#B3	reserved
+;#B4	reserved
+;#B5	reserved
+;#B6	reserved
+;#B7	reserved
+;#B8	reserved
+;#B9	reserved
+;#BA	reserved
+;#BB	reserved
+;#BC	reserved
+;#BD	reserved
+;#BE	reserved
+;#BF	reserved
+Scorp_1FFD		EQU #C0
+Pent_7FFD		EQU #C1
+Border_FE		EQU #C2						; #FE, write only
+ALL_MODE		EQU #C3						; Внешний - #204E
+PORT_Y			EQU #C4						; #89
+RGMOD			EQU #C5						; #C9
+CNF_PORT		EQU #C6						; #3C / #7C, #24 / #74
+SCALE			EQU #C7						; PGACC - SCALE_PORT (#FC)
+;#C8 - копия Scorp_1FFD
+;#C9 - копия Pent_7FFD
+;#CA - копия Border_FE
+HOLD			EQU #CB						; Задаёт значения счётчиков синхронизатора синхроимпульсов. %xxxx'yyyy -  позиция экрана
+;#CC - копия PORT_Y
+;#CD - копия RGMOD
+;#CE - копия CNF_PORT
+;#CF - копия SCALE
+
+;#D0 - vRAM page 0 for 512 kb (окно C000-FFFF)
+;#D1 - vRAM page 1 for 512 kb (окно C000-FFFF)
+;#D2 - vRAM page 2 for 512 kb (окно C000-FFFF)
+;#D3 - vRAM page 3 for 512 kb (окно C000-FFFF)
+;#D4 - vRAM page 4 for 512 kb (окно C000-FFFF)
+;#D5 - vRAM page 5 for 512 kb (окно C000-FFFF)
+;#D6 - vRAM page 6 for 512 kb (окно C000-FFFF)
+;#D7 - vRAM page 7 for 512 kb (окно C000-FFFF)
+;#D8 - vRAM page 8 for 512 kb (окно C000-FFFF)
+;#D9 - vRAM page 9 for 512 kb (окно C000-FFFF)
+;#DA - vRAM page A for 512 kb (окно C000-FFFF)
+;#DB - vRAM page B for 512 kb (окно C000-FFFF)
+;#DC - vRAM page C for 512 kb (окно C000-FFFF)
+;#DD - vRAM page D for 512 kb (окно C000-FFFF)
+;#DE - vRAM page E for 512 kb (окно C000-FFFF)
+;#DF - vRAM page F for 512 kb (окно C000-FFFF)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+vROM:					;
+.ZX_EXPANSION:		EQU #E0		; vROM page EXPANSION.		Port #1FFD bit1=1 (#24 bit6=0, bit0=0)
+.TR_DOS:		EQU #E1		; vROM page TR-DOS.		PC = #3D00..#3DFF and #1FFD bit1=0 (#24 bit0=0)
+.BASIC_128:		EQU #E2		; vROM page BASIC-128.		#7FFD bit4=0 and #1FFD bit1=0 (#24 bit0=0)
+.BASIC_48:		EQU #E3		; vROM page BASIC-48.		#7FFD bit4=1 and #1FFD bit1=0 (#24 bit0=0)
+;					; 
+.ZX_EXPANSION_2:	EQU #E4		; vROM page EXPANSION 2.	Port #1FFD bit1=1 (#24 bit6=0, bit0=1)
+.TR_DOS_2:		EQU #E5		; vROM page TR-DOS 2.		PC = #3D00..#3DFF and #1FFD bit1=0 (#24 bit0=1)
+.BASIC_128_2:		EQU #E6		; vROM page BASIC-128 2.	#7FFD bit4=0 and #1FFD bit1=0 (#24 bit0=1)
+.BASIC_48_2:		EQU #E7		; vROM page BASIC-48 2.		#7FFD bit4=1 and #1FFD bit1=0 (#24 bit0=1)
+;
+.ZX_BIOS_1		EQU #EB		; vROM page BIOS-3		Port #74 = 0
+.ZX_BIOS_2		EQU #EF		; vROM page BIOS-4		Port #74 = 1
+;
+TMP_CELL_1		EQU #EC		; user's memory cell = FF. Используется в режиме спектрума в TR-DOS
+TMP_CELL_2		EQU #ED		; user's memory cell = 00. Используется в режиме спектрума в TR-DOS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SLOT0			EQU #E8						; RAM page (окно 0000-3FFF)
+SLOT1			EQU #E9						; RAM page (окно 4000-7FFF)
+SLOT2			EQU #EA						; RAM page (окно 8000-BFFF)
+RET_PORT		EQU #EE						; Page set after Soft RESET. Любое, кроме 0, значение - страница куда передастся управление после Soft reset
+
+; Установка значения в какой либо порт от #F0 до #FF приведет к одному и тому же результату, что и просто установка значения в порт #F0. В схеме сделана
+; переадресация номера порта так, что при значении #Fx номер порта берется как #F0+Spectrum_PAGE, где Spectrum_PAGE - номер спектрумовской страницы, адресуемой
+; по портам #7FFD и #1FFD. Таким образом достигается совместимость с Пентагоном и Скорпионом по распределению памяти и делается возможным установка любого
+; номера страницы спринтеровской памяти для любой страницы Спектрума.
+;
+SLOT3			EQU #F0						; RAM page for 128/256 kb (окно C000-FFFF)
+;F1h - RAM page for 128/256 kb (окно C000-FFFF)
+;F2h - RAM page for 128/256 kb (окно C000-FFFF)
+;F3h - RAM page for 128/256 kb (окно C000-FFFF)
+;F4h - RAM page for 128/256 kb (окно C000-FFFF)
+;F5h - RAM page for 128/256 kb (окно C000-FFFF)
+;F6h - RAM page for 128/256 kb (окно C000-FFFF)
+;F7h - RAM page for 128/256 kb (окно C000-FFFF)
+;F8h - RAM page for     256 kb (окно C000-FFFF)
+;F9h - RAM page for     256 kb (окно C000-FFFF)
+;FAh - RAM page for     256 kb (окно C000-FFFF)
+;FBh - RAM page for     256 kb (окно C000-FFFF)
+;FCh - RAM page for     256 kb (окно C000-FFFF)
+;FDh - RAM page for     256 kb (окно C000-FFFF)
+;FEh - RAM page for     256 kb (окно C000-FFFF)
+;FFh - RAM page for     256 kb (окно C000-FFFF)
+;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -;

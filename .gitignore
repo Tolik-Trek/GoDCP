@@ -1,0 +1,9 @@
+# Build output; retain the directory in a fresh checkout.
+!/Build/
+/Build/*
+!/Build/.gitkeep
+
+# Operating system metadata.
+.DS_Store
+Thumbs.db
+Desktop.ini
