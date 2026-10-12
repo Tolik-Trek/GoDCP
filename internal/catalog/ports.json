@@ -1,0 +1,384 @@
+{
+  "source": "Example/внутренние_порты.txt",
+  "sha256": "879496B1C63645CE1CAF9A70DAED8ECF6D69E9F3D896F8187C246ED295739986",
+  "entries": [
+    {
+      "code": 16,
+      "name": "VG93_1F",
+      "description": "порт ВГ93 (1F)",
+      "line": 31
+    },
+    {
+      "code": 17,
+      "name": "VG93_3F",
+      "description": "порт ВГ93 (3F)",
+      "line": 32
+    },
+    {
+      "code": 18,
+      "name": "VG93_5F",
+      "description": "порт ВГ93 (5F)",
+      "line": 33
+    },
+    {
+      "code": 19,
+      "name": "VG93_7F",
+      "description": "порт ВГ93 (7F)",
+      "line": 34
+    },
+    {
+      "code": 20,
+      "name": "VG93_State",
+      "description": "порт на запись - состояние контроллера дисковода (внешний порт #FF)",
+      "line": 35
+    },
+    {
+      "code": 21,
+      "name": "JOY_VG93",
+      "description": "порт на чтение - джойстик и IRQ/INTRQ контроллера ВГ93",
+      "line": 36
+    },
+    {
+      "code": 22,
+      "name": "FDD720",
+      "description": "",
+      "line": 39
+    },
+    {
+      "code": 23,
+      "name": "FDD144",
+      "description": "",
+      "line": 41
+    },
+    {
+      "code": 27,
+      "name": "ISA_CTRL",
+      "description": "#9FBD",
+      "line": 47
+    },
+    {
+      "code": 28,
+      "name": "CMOS_DATA.READ",
+      "description": "#FFBD",
+      "line": 48
+    },
+    {
+      "code": 29,
+      "name": "CMOS_ADDR.WRITE",
+      "description": "#DFBD",
+      "line": 49
+    },
+    {
+      "code": 30,
+      "name": "CMOS_DATA.WRITE",
+      "description": "#BFBD",
+      "line": 50
+    },
+    {
+      "code": 32,
+      "name": "IDE_DATA_1F0",
+      "description": "HDD - регистр данных. внешний #0050",
+      "line": 54
+    },
+    {
+      "code": 33,
+      "name": "IDE_ERROR_1F1",
+      "description": "HDD - регистр состояния/ошибок. внешний #0051",
+      "line": 55
+    },
+    {
+      "code": 34,
+      "name": "IDE_COUNTER_1F2",
+      "description": "HDD - рег. кол-ва сек-ов для R/W. внешний #0052",
+      "line": 56
+    },
+    {
+      "code": 35,
+      "name": "IDE_SECTOR_1F3",
+      "description": "HDD - регистр сектора. внешний #0053",
+      "line": 57
+    },
+    {
+      "code": 36,
+      "name": "IDE_CYLINDER_L_1F4",
+      "description": "HDD - регистр дорожки-low. внешний #0054",
+      "line": 58
+    },
+    {
+      "code": 37,
+      "name": "IDE_CYLINDER_H_1F5",
+      "description": "HDD - регистр дорожки-high. внешний #0055",
+      "line": 59
+    },
+    {
+      "code": 38,
+      "name": "IDE_DEVICE_HEAD_1F6",
+      "description": "HDD - рег. heads/выбора mas-slave. внешний #4052",
+      "line": 60
+    },
+    {
+      "code": 39,
+      "name": "IDE_STATUS_CMD_1F7",
+      "description": "HDD - регистр команд. внешний #4053",
+      "line": 61
+    },
+    {
+      "code": 40,
+      "name": "IDE_CONTROL_3F6",
+      "description": "HDD - доп. регистр управления 3F6. внешний #4054",
+      "line": 62
+    },
+    {
+      "code": 41,
+      "name": "IDE_STATUS_3F7",
+      "description": "HDD - доп. регистр состояния 3F7. внешний #4055",
+      "line": 63
+    },
+    {
+      "code": 42,
+      "name": "IDE_CHANEL_1",
+      "description": "HDD - выбирает Secondary IDE, внешний #BC",
+      "line": 64
+    },
+    {
+      "code": 43,
+      "name": "IDE_CHANEL_2",
+      "description": "HDD - выбирает Primary IDE, внешний #BC",
+      "line": 65
+    },
+    {
+      "code": 44,
+      "name": "VSYNC320",
+      "description": "#40BD",
+      "line": 66
+    },
+    {
+      "code": 45,
+      "name": "VSYNC312",
+      "description": "#60BD",
+      "line": 67
+    },
+    {
+      "code": 46,
+      "name": "RESET",
+      "description": "S_RESET - #40A4 - Reset port",
+      "line": 68
+    },
+    {
+      "code": 47,
+      "name": "UNKNOWN",
+      "description": "?????\t; #60BC - что-то на запись",
+      "line": 69
+    },
+    {
+      "code": 50,
+      "name": "ISA_Control",
+      "description": "ISA-signals such as RESET, AEN, A19...A14. Внешний #9FBD",
+      "line": 72
+    },
+    {
+      "code": 64,
+      "name": "ZX_Keyboard",
+      "description": "ZX-Keyboard (порт FE)",
+      "line": 86
+    },
+    {
+      "code": 82,
+      "name": "AY_FFFD_READ",
+      "description": "AY_D READ\t\t\t; AY-8910-port (FFFD) чтение данных",
+      "line": 104
+    },
+    {
+      "code": 88,
+      "name": "Kempston_Mouse",
+      "description": "#FADF внешний",
+      "line": 110
+    },
+    {
+      "code": 136,
+      "name": "CBL_OUT",
+      "description": "Write to COVOX/COVOX-Blaster",
+      "line": 159
+    },
+    {
+      "code": 137,
+      "name": "CBL_SYS_PORT",
+      "description": "CBL_DIR",
+      "line": 160
+    },
+    {
+      "code": 143,
+      "name": "ROM_RG",
+      "description": "порт переключения страниц ROM и FastRam, дублируется внешним портом #5C",
+      "line": 166
+    },
+    {
+      "code": 144,
+      "name": "AY_FFFD_WRITE",
+      "description": "AY-8910-port (FFFD)  ;!!!!! запись адреса??????",
+      "line": 167
+    },
+    {
+      "code": 145,
+      "name": "AY_BFFD",
+      "description": "AY-8910-port (BFFD)",
+      "line": 168
+    },
+    {
+      "code": 192,
+      "name": "Scorp_1FFD",
+      "description": "",
+      "line": 215
+    },
+    {
+      "code": 193,
+      "name": "Pent_7FFD",
+      "description": "",
+      "line": 216
+    },
+    {
+      "code": 194,
+      "name": "Border_FE",
+      "description": "#FE, write only",
+      "line": 217
+    },
+    {
+      "code": 195,
+      "name": "ALL_MODE",
+      "description": "Внешний - #204E",
+      "line": 218
+    },
+    {
+      "code": 196,
+      "name": "PORT_Y",
+      "description": "#89",
+      "line": 219
+    },
+    {
+      "code": 197,
+      "name": "RGMOD",
+      "description": "#C9",
+      "line": 220
+    },
+    {
+      "code": 198,
+      "name": "CNF_PORT",
+      "description": "#3C / #7C, #24 / #74",
+      "line": 221
+    },
+    {
+      "code": 199,
+      "name": "SCALE",
+      "description": "PGACC - SCALE_PORT (#FC)",
+      "line": 222
+    },
+    {
+      "code": 203,
+      "name": "HOLD",
+      "description": "Задаёт значения счётчиков синхронизатора синхроимпульсов. %xxxx'yyyy -  позиция экрана",
+      "line": 226
+    },
+    {
+      "code": 224,
+      "name": "vROM.ZX_EXPANSION",
+      "description": "vROM page EXPANSION.\t\tPort #1FFD bit1=1 (#24 bit6=0, bit0=0)",
+      "line": 250
+    },
+    {
+      "code": 225,
+      "name": "vROM.TR_DOS",
+      "description": "vROM page TR-DOS.\t\tPC = #3D00..#3DFF and #1FFD bit1=0 (#24 bit0=0)",
+      "line": 251
+    },
+    {
+      "code": 226,
+      "name": "vROM.BASIC_128",
+      "description": "vROM page BASIC-128.\t\t#7FFD bit4=0 and #1FFD bit1=0 (#24 bit0=0)",
+      "line": 252
+    },
+    {
+      "code": 227,
+      "name": "vROM.BASIC_48",
+      "description": "vROM page BASIC-48.\t\t#7FFD bit4=1 and #1FFD bit1=0 (#24 bit0=0)",
+      "line": 253
+    },
+    {
+      "code": 228,
+      "name": "vROM.ZX_EXPANSION_2",
+      "description": "vROM page EXPANSION 2.\tPort #1FFD bit1=1 (#24 bit6=0, bit0=1)",
+      "line": 255
+    },
+    {
+      "code": 229,
+      "name": "vROM.TR_DOS_2",
+      "description": "vROM page TR-DOS 2.\t\tPC = #3D00..#3DFF and #1FFD bit1=0 (#24 bit0=1)",
+      "line": 256
+    },
+    {
+      "code": 230,
+      "name": "vROM.BASIC_128_2",
+      "description": "vROM page BASIC-128 2.\t#7FFD bit4=0 and #1FFD bit1=0 (#24 bit0=1)",
+      "line": 257
+    },
+    {
+      "code": 231,
+      "name": "vROM.BASIC_48_2",
+      "description": "vROM page BASIC-48 2.\t\t#7FFD bit4=1 and #1FFD bit1=0 (#24 bit0=1)",
+      "line": 258
+    },
+    {
+      "code": 232,
+      "name": "SLOT0",
+      "description": "RAM page (окно 0000-3FFF)",
+      "line": 266
+    },
+    {
+      "code": 233,
+      "name": "SLOT1",
+      "description": "RAM page (окно 4000-7FFF)",
+      "line": 267
+    },
+    {
+      "code": 234,
+      "name": "SLOT2",
+      "description": "RAM page (окно 8000-BFFF)",
+      "line": 268
+    },
+    {
+      "code": 235,
+      "name": "vROM.ZX_BIOS_1",
+      "description": "vROM page BIOS-3\t\tPort #74 = 0",
+      "line": 260
+    },
+    {
+      "code": 236,
+      "name": "TMP_CELL_1",
+      "description": "user's memory cell = FF. Используется в режиме спектрума в TR-DOS",
+      "line": 263
+    },
+    {
+      "code": 237,
+      "name": "TMP_CELL_2",
+      "description": "user's memory cell = 00. Используется в режиме спектрума в TR-DOS",
+      "line": 264
+    },
+    {
+      "code": 238,
+      "name": "RET_PORT",
+      "description": "Page set after Soft RESET. Любое, кроме 0, значение - страница куда передастся управление после Soft reset",
+      "line": 269
+    },
+    {
+      "code": 239,
+      "name": "vROM.ZX_BIOS_2",
+      "description": "vROM page BIOS-4\t\tPort #74 = 1",
+      "line": 261
+    },
+    {
+      "code": 240,
+      "name": "SLOT3",
+      "description": "RAM page for 128/256 kb (окно C000-FFFF)",
+      "line": 276
+    }
+  ]
+}

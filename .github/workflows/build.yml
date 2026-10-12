@@ -1,0 +1,70 @@
+name: Test and build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v7
+        with:
+          go-version: '1.27.x'
+          cache: true
+      - name: Set up Windows C compiler
+        if: runner.os == 'Windows'
+        id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-gcc
+      - name: Set up Linux graphics headers
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev
+      - name: Test and build Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
+        run: |
+          $env:PATH = (Join-Path $env:MSYS2_LOCATION 'ucrt64/bin') + ';' + $env:PATH
+          ./scripts/build.ps1
+      - name: Test and build Linux or macOS
+        if: runner.os != 'Windows'
+        run: bash scripts/build.sh
+      - name: Package Linux executable with its permissions
+        if: runner.os == 'Linux'
+        run: tar -czf Build/GoDCP.tar.gz -C Build GoDCP
+      - name: Package unsigned macOS application
+        if: runner.os == 'macOS'
+        run: tar -czf Build/GoDCP.tar.gz -C Build GoDCP.app
+      - name: Upload Windows executable
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v7
+        with:
+          name: GoDCP-${{ runner.os }}-${{ runner.arch }}
+          path: Build/GoDCP.exe
+          if-no-files-found: error
+      - name: Upload Linux or macOS executable
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v7
+        with:
+          name: GoDCP-${{ runner.os }}-${{ runner.arch }}
+          path: Build/GoDCP.tar.gz
+          if-no-files-found: error
