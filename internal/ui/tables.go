@@ -51,40 +51,6 @@ func (g *grid) setRows(rows [][]string) {
 	g.table.Refresh()
 }
 
-type filterState struct {
-	cnf, direction, dos, pn5 int
-	query                    string
-	onlyAssigned             bool
-}
-
-func (f filterState) matches(offset int, value byte, name string) bool {
-	port, c := dcp.Decode(offset)
-	if f.cnf > 0 && c.CNF != f.cnf-1 {
-		return false
-	}
-	if f.direction > 0 && bit(c.Read) != f.direction-1 {
-		return false
-	}
-	if f.dos > 0 && bit(c.DOSOff) != f.dos-1 {
-		return false
-	}
-	if f.pn5 > 0 && bit(c.PN5) != f.pn5-1 {
-		return false
-	}
-	if f.onlyAssigned && value == 0 {
-		return false
-	}
-	if f.query != "" {
-		s := fmt.Sprintf("%04X %04X %02X %s", offset, port, value, name)
-		numeric, err := dcp.ParseNumber(f.query, 16)
-		matchesNumber := err == nil && (dcp.Canonical(numeric) == port || int(numeric) == offset || numeric == uint16(value))
-		if !matchesNumber && !strings.Contains(strings.ToLower(s), strings.ToLower(strings.TrimSpace(f.query))) {
-			return false
-		}
-	}
-	return true
-}
-
 func (w *Workbench) filters(f *filterState, changed func()) fyne.CanvasObject {
 	all := w.t("Все", "All")
 	selector := func(options []string, current *int) *widget.Select {
@@ -101,8 +67,54 @@ func (w *Workbench) filters(f *filterState, changed func()) fyne.CanvasObject {
 	q.SetPlaceHolder(w.t("Код, имя, адрес или смещение…", "Code, name, address or offset…"))
 	q.SetText(f.query)
 	q.OnChanged = func(s string) { f.query = s; changed() }
+	field := widget.NewSelect([]string{
+		w.t("Все поля", "All fields"), w.t("Адрес", "Address"),
+		w.t("Смещение", "Offset"), w.t("Код", "Code"), w.t("Имя", "Name"),
+	}, nil)
+	field.SetSelectedIndex(int(f.field))
+	q.Validator = func(s string) error {
+		if strings.TrimSpace(s) == "" || f.field == searchAll || f.field == searchName {
+			return nil
+		}
+		bits := 16
+		if f.field == searchOffset {
+			bits = 14
+		} else if f.field == searchCode {
+			bits = 8
+		}
+		if _, err := dcp.ParseNumber(s, bits); err != nil {
+			return fmt.Errorf(w.t("Введите HEX-число 0–%X или двоичное с %%", "Enter a HEX number 0–%X or binary with %%"), (1<<bits)-1)
+		}
+		return nil
+	}
+	hint := widget.NewLabel("")
+	hint.Wrapping = fyne.TextWrapWord
+	updateHint := func() {
+		switch f.field {
+		case searchAddress:
+			hint.SetText(w.t("Точный адрес HEX 0000–FFFF; находит группу любого из её 128 алиасов.", "Exact HEX address 0000–FFFF; finds the group of any of its 128 aliases."))
+		case searchOffset:
+			hint.SetText(w.t("Точное смещение HEX 0000–3FFF в загруженном BIN.", "Exact HEX offset 0000–3FFF in the loaded BIN."))
+		case searchCode:
+			hint.SetText(w.t("Точный внутренний код HEX 00–FF.", "Exact internal HEX code 00–FF."))
+		case searchName:
+			hint.SetText(w.t("Часть имени внутреннего порта, без учёта регистра.", "Part of an internal port name, case insensitive."))
+		default:
+			hint.SetText(w.t("Число: точное совпадение в любом поле, адрес включает алиасы. Имя: часть строки. Для поиска по столбцу выберите поле.", "Number: exact match in any field, addresses include aliases. Name: substring. Choose a field to search one column."))
+		}
+	}
+	field.OnChanged = func(string) {
+		f.field = searchField(field.SelectedIndex())
+		updateHint()
+		_ = q.Validate()
+		changed()
+	}
+	updateHint()
+	_ = q.Validate()
+	clear := widget.NewButton(w.t("Очистить", "Clear"), func() { q.SetText("") })
 	selectors := container.NewHBox(widget.NewLabel("CNF"), cnf, widget.NewLabel("I/O"), dir, widget.NewLabel("DOS"), dos, widget.NewLabel("PN5"), pn5)
-	return container.NewBorder(nil, nil, selectors, nil, q)
+	search := container.NewBorder(nil, nil, container.NewHBox(widget.NewLabel(w.t("Поиск", "Search")), field), clear, q)
+	return container.NewVBox(selectors, search, hint)
 }
 
 func (w *Workbench) row(offset int) []string {
